@@ -1,13 +1,12 @@
 package controller;
 
 import view.MainWindow;
-import java.io.IOException;
-
+import model.AlertTropel;
 import javax.swing.Timer;
-
+import java.io.IOException;
 import comunications.Client;
 import comunications.Request;
-
+import view.PortAndAdressDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,14 +15,11 @@ public class Controller implements ActionListener{
 	private Timer timer;
 	private Client client;
 	private MainWindow window;
+	private PortAndAdressDialog dialog;
 	
 	public Controller() {
-		try {
-			client = new Client();
-			window = new MainWindow(this);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		window = new MainWindow(this);
+		dialog = new PortAndAdressDialog(window, this);
 		tableViewManager();
 	}
 
@@ -32,9 +28,20 @@ public class Controller implements ActionListener{
 		switch(Event.valueOf(e.getActionCommand())) {
 		case SEND:
 			send();
+		case CONNECT:
+			connect();
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void connect() {
+		dialog.setVisible(false);
+		try {
+			client = new Client(dialog.getAdress(), dialog.getPort());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -59,10 +66,24 @@ public class Controller implements ActionListener{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
+				try {
+					if(client.consumeAlertService() != null) {
+						window.paintTable(new AlertTropel("-", client.consumeAlertService()));
+						window.repaint();
+					}else if(client.consumeAlertWithTextService() != null) {
+						window.paintTable(client.consumeAlertWithTextService());
+						window.repaint();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
+	}
+	
+	public void stopTimer() {
+		timer.stop();
 	}
 
 	public static void main(String[] args) {

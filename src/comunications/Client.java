@@ -12,8 +12,8 @@ public class Client extends Thread {
 	private DataOutputStream output;
 	private boolean stop;
 
-	public Client() throws IOException {
-		this.connection = new Socket("localhost", 9000);
+	public Client(String adress, String port) throws IOException {
+		this.connection = new Socket(adress, Integer.parseInt(port));
 		input = new DataInputStream(connection.getInputStream());
 		output = new DataOutputStream(connection.getOutputStream());
 		start();
@@ -45,15 +45,14 @@ public class Client extends Thread {
 		default:
 			break;
 		}
-
 	}
 
-	private void consumeAlertWithTextService() throws IOException {
-		System.out.println(input.readUTF());
+	public String[] consumeAlertWithTextService() throws IOException {
+		return new String[] {input.readUTF(), input.readUTF()};
 	}
 
-	private void consumeAlertService() throws IOException {
-		System.out.println(input.readUTF());
+	public String consumeAlertService() throws IOException {
+		return input.readUTF();
 	}
 
 	public void requestAlertWithText(String text) throws IOException {

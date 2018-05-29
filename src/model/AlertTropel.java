@@ -1,13 +1,11 @@
 package model;
 
-import java.util.Date;
-
 public class AlertTropel {
 
 	private String alertText;
-	private Date alertMoment;
+	private String alertMoment;
 	
-	public AlertTropel(String alertText, Date alertMoment) {
+	public AlertTropel(String alertText, String alertMoment) {
 		this.alertText = alertText;
 		this.alertMoment = alertMoment;
 	}
@@ -16,8 +14,12 @@ public class AlertTropel {
 		return alertText;
 	}
 
-	public Date getAlertMoment() {
+	public String getAlertMoment() {
 		return alertMoment;
+	}
+
+	public String[] getAttributeList() {
+		return new String[] {alertMoment, alertText};
 	}
 
 	@Override

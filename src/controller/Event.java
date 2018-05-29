@@ -2,5 +2,5 @@ package controller;
 
 public enum Event {
 
-	SEND;
+	SEND, CONNECT;
 }
